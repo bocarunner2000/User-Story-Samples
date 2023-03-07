@@ -1,0 +1,62 @@
+As a Caregiver
+I want a version of the GPS Screen that can support the 7020 Mobile Method
+So I can select the Service Location for the visit
+
+Details:
+
+See Miro: CF136-CF138
+
+Implement the UX in the GPS Location screen based on the configuration delivered by 
+
+Only applies to non-skilled visits
+
+If the Allow Caregiver to select the visit as a Non Member Home Visit (Boolean) is set then present a drop-down experience per Miro with the options provided by the API.  Only the options checked at the office level should be presented.
+
+Member Home 
+Family Home 
+Neighbor’s Home 
+Community
+Other
+
+Note that “Family Home”, “Neighbor's Home”, “Community” and “Other” are all considered “Non Member Home” type service delivery locations.
+
+If the Caregiver is within the GeoFence (large blue circle) then the Service Delivery Location  should be auto-selected to the Member Home (read-only) which is the default option.
+
+If the Caregiver is outside the GeoFence (large blue circle) then the Service Delivery Location should be selectable meaning I can now change the selection to any of the preconfigured locations.  
+
+Only the Caregiver can change the Service Delivery Location selection when not read-only - selectable.
+
+If the selection is not the Member’s Home remove the distance from patient guidance, the geofence blue circle and patient PIN.
+
+All Service Delivery Locations selections other than the Members Home should be treated the same way as if a Community Visit is selected.  If a secondary address is selected the tolerance test will apply if the selection remains the Members Home.
+
+The same experience should be presented for both Clock In and Clock Out.
+
+A/C:
+
+Given I am a Caregiver
+When I Clock In or Clock Out
+And I select the GPS EVV method
+Then I should be presented with a modified GPS map screen
+And the standard Community Visit switch should be hidden
+
+Given I am a Caregiver
+When I am presented with a modified GPS map screen
+And I am inside the Geofence
+Then the “Member Home” option should be selected for the Service Delivery Location Read-Only
+
+Given I am a Caregiver
+When I am presented with a modified GPS map screen
+And I am outside the Geofence
+And the selection is “Member Home”
+Then the Blue Circle around the Patient’s Home address (Geofence) should be presented with distance
+And I should be able to change the Service Delivery Location to any other option
+
+Given I am a Caregiver
+When I am presented with a modified GPS map screen
+And I change the Service Delivery Location to any option that is not “Member Home”
+Then the Blue Circle around the Patient’s Home address (Geofence), PIN and distance should be hidden
+
+Given I am a Caregiver
+When my agency has the legacy web app
+Then the configuration will be limited to Home and Community (if checked in Office Settings)
